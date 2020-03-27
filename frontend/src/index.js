@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import "normalize.css";
 import "./styles/style.scss";
+import "normalize.css";
 
 import Router from "./routers/Router";
 

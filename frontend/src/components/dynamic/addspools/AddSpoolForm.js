@@ -1,28 +1,30 @@
 import React from "react";
 import axios from "axios";
-import FormControl from "@material-ui/core/FormControl";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { makeStyles } from "@material-ui/core/styles";
+
+import { makeStyles } from "@material-ui/core";
 
 import { API_URL } from "../../../utils/api";
+import AddNewTypeDialog from "./AddNewTypeDialog";
+import AddSpoolAutocomplete from "./AddSpoolAutocomplete";
 
 const useStyles = makeStyles({
-    textField: {
-        width: "18rem"
-    }
+    addSpoolForm: {}
 });
 
 const AddSpoolForm = () => {
     const classes = useStyles();
     const [values, setValues] = React.useState({
-        plasticType: "",
-        color: "",
-        manufacturer: {},
-        weight: ""
+        plasticType: null,
+        color: null,
+        manufacturer: null,
+        weight: null
     });
     const [isLoading, setIsLoading] = React.useState(true);
-    const [data, setData] = React.useState({});
+    const [data, setData] = React.useState(null);
+    const [open, toggleOpen] = React.useState(false);
+    const [dialogValue, setDialogValue] = React.useState({
+        title: null
+    });
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -33,49 +35,57 @@ const AddSpoolForm = () => {
         fetchData();
     }, []);
 
+    const handleClose = () => {
+        setDialogValue({
+            title: ""
+        });
+
+        toggleOpen(false);
+    };
+
+    const handleSubmit = prop => event => {
+        event.preventDefault();
+        setValues({
+            ...values,
+            [prop]: dialogValue.title
+        });
+        axios
+            .post(`${API_URL}/statistics/update/`, {
+                [prop]: { title: dialogValue.title }
+            })
+            .catch(error => console.log(error));
+
+        handleClose();
+    };
+
     const handleChange = prop => (event, value) => {
-        setValues({ ...values, [prop]: value });
+        setValues({ ...values, [prop]: event });
     };
 
     return (
-        <>
+        <div>
             {!isLoading && (
-                <div>
-                    <FormControl>
-                        <Autocomplete
-                            id="manufacturer"
-                            className={classes.textField}
-                            options={data.manufacturers}
-                            getOptionLabel={option => option.title}
-                            onChange={handleChange("manufacturer")}
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    label="Gamintojas"
-                                    variant="standard"
-                                />
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl>
-                        <Autocomplete
-                            id="plasticType"
-                            className={classes.textField}
-                            options={data.plasticType}
-                            getOptionLabel={option => option.title}
-                            onChange={handleChange("plasticType")}
-                            renderInput={params => (
-                                <TextField
-                                    {...params}
-                                    label="Plastiko tipas"
-                                    variant="standard"
-                                />
-                            )}
-                        />
-                    </FormControl>
+                <div className={classes.addSpoolForm}>
+                    <AddSpoolAutocomplete
+                        values={values.manufacturer}
+                        toggleOpen={toggleOpen}
+                        setDialogValue={setDialogValue}
+                        handleChange={handleChange("manufacturer")}
+                        options={data.manufacturers}
+                        textFieldLabel="Gamintojas"
+                    />
+                    <AddNewTypeDialog
+                        open={open}
+                        handleClose={handleClose}
+                        handleSubmit={handleSubmit("manufacturer")}
+                        dialogValue={dialogValue}
+                        setDialogValue={setDialogValue}
+                        dialogTitle="Pridėti naują gamintoją"
+                        textFieldLabel="Gamintojas"
+                    />
                 </div>
             )}
-        </>
+        </div>
     );
 };
 
