@@ -1,0 +1,30 @@
+POST http://localhost:8000/api/spools/add
+Content-Type: application/json
+
+{
+  "customId": "0000000007",
+  "manufacturer": "WHS",
+  "plasticType": "dust",
+  "weight": 450,
+  "color": "red"
+}
+
+###
+
+GET http://localhost:8000/rms-api/spools/5e6b833a527fb33cecc8ed31
+
+###
+
+POST http://localhost:8000/api/statistics/update
+Content-Type: application/json
+
+{
+  "manufacturers": [
+    {
+      "title": "TEST",
+      "id": "003"
+    }
+  ]
+}
+###
+GET http://localhost:8000/api/statistics/

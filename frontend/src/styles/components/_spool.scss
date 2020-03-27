@@ -1,0 +1,19 @@
+.spool__content {
+    border-top: none;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    // height: 3rem;
+    color: $color-black;
+    li {
+        text-align: center;
+        overflow: hidden;
+        border: 1px solid $color-border;
+        border-top: none;
+
+        .spool__info {
+            padding: 0.75rem 0;
+        }
+    }
+}
