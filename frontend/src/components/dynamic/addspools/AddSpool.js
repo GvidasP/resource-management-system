@@ -4,11 +4,11 @@ import { makeStyles } from "@material-ui/core";
 
 import AddSpoolForm from "./AddSpoolForm";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
     pageTitle: {
-        color: "#2e2e2e"
+        color: theme.palette.text.primary
     }
-});
+}));
 
 const AddSpool = () => {
     const classes = useStyles();

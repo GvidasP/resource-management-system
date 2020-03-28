@@ -19,12 +19,12 @@ POST http://localhost:8000/api/statistics/update
 Content-Type: application/json
 
 {
-  "manufacturers": [
-    {
-      "title": "TEST",
-      "id": "003"
-    }
-  ]
+  "manufacturer": {
+    "title": "TEST10"
+  },
+  "plasticType": {
+    "title": "dust"
+  }
 }
 ###
 GET http://localhost:8000/api/statistics/

@@ -21,13 +21,20 @@ router.post("/update", async (req, res) => {
         const oldDoc = await db
             .collection("statistics")
             .findOne({}, { sort: { _id: -1 } });
-        const docUpdate = {
-            $set: {
-                manufacturers: [...oldDoc.manufacturers, req.body.manufacturer]
-            }
+
+        const updatedDoc = {
+            manufacturers: req.body.manufacturers
+                ? [...oldDoc.manufacturers, req.body.manufacturers]
+                : [...oldDoc.manufacturers],
+            plasticTypes: req.body.plasticTypes
+                ? [...oldDoc.plasticTypes, req.body.plasticTypes]
+                : [...oldDoc.plasticTypes],
+            colors: req.body.colors
+                ? [...oldDoc.colors, req.body.colors]
+                : [...oldDoc.colors]
         };
-        db.collection("statistics").updateOne({ _id: oldDoc._id }, docUpdate);
-        res.status(200).json(docUpdate);
+        db.collection("statistics").insertOne(updatedDoc);
+        res.status(200).json(updatedDoc);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

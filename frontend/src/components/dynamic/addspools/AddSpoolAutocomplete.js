@@ -8,6 +8,7 @@ import Autocomplete, {
 const filter = createFilterOptions();
 
 const AddSpoolAutocomplete = ({
+    id,
     value,
     toggleOpen,
     setDialogValue,
@@ -18,6 +19,7 @@ const AddSpoolAutocomplete = ({
     return (
         <Autocomplete
             value={value}
+            size="small"
             onChange={(event, newValue) => {
                 if (typeof newValue === "string") {
                     setTimeout(() => {
@@ -54,7 +56,7 @@ const AddSpoolAutocomplete = ({
 
                 return filtered;
             }}
-            id="add-spool-autocomplete"
+            id={id}
             options={options}
             getOptionLabel={option => {
                 if (typeof option === "string") {
@@ -66,7 +68,6 @@ const AddSpoolAutocomplete = ({
                 return option.title;
             }}
             renderOption={option => option.title}
-            style={{ width: 300 }}
             freeSolo
             renderInput={params => (
                 <TextField
