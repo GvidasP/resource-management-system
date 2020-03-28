@@ -10,6 +10,7 @@ const useStyles = makeStyles(theme => ({
     root: {
         minWidth: 250,
         maxWidth: 350,
+        height: 150,
         marginBottom: theme.spacing(2)
     },
     bullet: {
@@ -36,9 +37,9 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const AddSpoolCard = ({ values }) => {
+const AddSpoolCard = ({ spool, handleRemoveSpool }) => {
     const classes = useStyles();
-    const { manufacturer, plasticType, color, weight } = values;
+    const { index, manufacturer, plasticType, color, weight } = spool;
 
     return (
         <Card className={classes.root}>
@@ -72,7 +73,12 @@ const AddSpoolCard = ({ values }) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" color="primary" variant="outlined">
+                <Button
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    onClick={handleRemoveSpool(index)}
+                >
                     Pašalinti
                 </Button>
             </CardActions>

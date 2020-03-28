@@ -4,6 +4,7 @@ import axios from "axios";
 import { makeStyles, Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import AddIcon from "@material-ui/icons/Add";
+import Typography from "@material-ui/core/Typography";
 
 import { API_URL } from "../../../utils/api";
 import AddNewTypeDialog from "./AddSpoolDialog";
@@ -17,6 +18,9 @@ const useStyles = makeStyles(theme => ({
     },
     input: {
         marginBottom: theme.spacing(2)
+    },
+    error: {
+        marginTop: theme.spacing(2)
     }
 }));
 
@@ -26,7 +30,7 @@ const AddSpoolForm = () => {
         plasticTypes: null,
         colors: null,
         manufacturers: null,
-        weight: null
+        weight: ""
     });
     const [isLoading, setIsLoading] = React.useState(true);
     const [data, setData] = React.useState(null);
@@ -39,8 +43,9 @@ const AddSpoolForm = () => {
     const [dialogValue, setDialogValue] = React.useState({
         title: null
     });
-
     const [error, setError] = React.useState("");
+    const [spools, setSpools] = React.useState([]);
+    const [spoolsIndex, setSpoolsIndex] = React.useState(0);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -153,13 +158,22 @@ const AddSpoolForm = () => {
         </div>
     );
 
+    const handleWeightChange = event => {
+        const input = event.target.value;
+        if (!input || input.match(/^\d+(\.\d)?$/)) {
+            setValues({ ...values, weight: input });
+            console.log(input, values.weight);
+        }
+    };
+
     const renderWeightForm = () => (
         <TextField
             id="weight-textfield"
             label="Svoris (g)"
             fullWidth
-            onChange={handleChange("weight")}
+            onChange={handleWeightChange}
             className={classes.input}
+            value={values.weight}
         />
     );
 
@@ -174,13 +188,32 @@ const AddSpoolForm = () => {
         </Button>
     );
 
+    const handleRemoveSpool = index => () => {
+        setSpools(spools.filter(spool => spool.index !== index));
+    };
+
     const handleFormSubmit = event => {
+        const { manufacturers, plasticTypes, colors, weight } = values;
+
         event.preventDefault();
-        if (error) {
-            console.log("error");
-            console.log(values);
+        if (!manufacturers || !plasticTypes || !colors || !weight) {
+            setError("Būtina užpildyti visus laukelius!");
         } else {
-            console.log(values);
+            const spool = {
+                index: spoolsIndex,
+                manufacturer: values.manufacturers.title,
+                plasticType: values.plasticTypes.title,
+                color: values.colors.title,
+                weight: values.weight
+            };
+            setSpools([...spools, spool]);
+            setSpoolsIndex(spoolsIndex + 1);
+            setValues({
+                plasticTypes: null,
+                colors: null,
+                manufacturers: null,
+                weight: ""
+            });
         }
     };
 
@@ -204,6 +237,11 @@ const AddSpoolForm = () => {
                     {renderColorForm()}
                     {renderWeightForm()}
                     {renderAddButton()}
+                    {error && (
+                        <Typography color="error" className={classes.error}>
+                            {error}
+                        </Typography>
+                    )}
                 </form>
             )}
             <div
@@ -215,7 +253,14 @@ const AddSpoolForm = () => {
                     flexWrap: "wrap"
                 }}
             >
-                {/* <AddSpoolCard values={values} /> */}
+                {spools &&
+                    spools.map(spool => (
+                        <AddSpoolCard
+                            key={spools.indexOf(spool)}
+                            spool={spool}
+                            handleRemoveSpool={handleRemoveSpool}
+                        />
+                    ))}
             </div>
         </div>
     );

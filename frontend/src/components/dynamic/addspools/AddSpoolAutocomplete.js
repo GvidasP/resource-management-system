@@ -19,7 +19,7 @@ const AddSpoolAutocomplete = ({
     return (
         <Autocomplete
             value={value}
-            size="small"
+            // size="small"
             onChange={(event, newValue) => {
                 if (typeof newValue === "string") {
                     setTimeout(() => {
