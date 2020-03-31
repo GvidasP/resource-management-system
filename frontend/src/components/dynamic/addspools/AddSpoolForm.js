@@ -93,7 +93,7 @@ const AddSpoolForm = () => {
         <div className={classes.input}>
             <AddSpoolAutocomplete
                 id="manufacturer-autocomplete"
-                values={values.manufacturers}
+                value={values.manufacturers}
                 toggleOpen={handleOpen("manufacturer")}
                 setDialogValue={setDialogValue}
                 handleChange={handleChange("manufacturers")}
@@ -116,7 +116,7 @@ const AddSpoolForm = () => {
         <div className={classes.input}>
             <AddSpoolAutocomplete
                 id="plasticType-autocomplete"
-                values={values.plasticTypes}
+                value={values.plasticTypes}
                 toggleOpen={handleOpen("plasticType")}
                 setDialogValue={setDialogValue}
                 handleChange={handleChange("plasticTypes")}
@@ -139,7 +139,7 @@ const AddSpoolForm = () => {
         <div className={classes.input}>
             <AddSpoolAutocomplete
                 id="color-autocomplete"
-                values={values.colors}
+                value={values.colors}
                 toggleOpen={handleOpen("color")}
                 setDialogValue={setDialogValue}
                 handleChange={handleChange("colors")}
@@ -162,7 +162,6 @@ const AddSpoolForm = () => {
         const input = event.target.value;
         if (!input || input.match(/^\d+(\.\d)?$/)) {
             setValues({ ...values, weight: input });
-            console.log(input, values.weight);
         }
     };
 
@@ -173,7 +172,7 @@ const AddSpoolForm = () => {
             fullWidth
             onChange={handleWeightChange}
             className={classes.input}
-            value={values.weight}
+            value={values && values.weight}
         />
     );
 
@@ -225,6 +224,7 @@ const AddSpoolForm = () => {
                 justifyContent: "space-between"
             }}
         >
+            {console.log(spools)}
             {!isLoading && (
                 <form
                     className={classes.addSpoolForm}

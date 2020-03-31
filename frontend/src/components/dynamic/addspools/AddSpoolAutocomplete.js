@@ -58,6 +58,7 @@ const AddSpoolAutocomplete = ({
             }}
             id={id}
             options={options}
+            inputValue={value && value.title}
             getOptionLabel={option => {
                 if (typeof option === "string") {
                     return option;
