@@ -15,16 +15,13 @@ GET http://localhost:8000/rms-api/spools/5e6b833a527fb33cecc8ed31
 
 ###
 
-POST http://localhost:8000/api/statistics/update
+POST http://localhost:8000/api/statistics/update/
 Content-Type: application/json
 
 {
-  "manufacturer": {
-    "title": "TEST10"
-  },
-  "plasticType": {
-    "title": "dust"
+  "plasticTypes": {
+    "title": "naujas14"
   }
 }
 ###
-GET http://localhost:8000/api/statistics/
+GET http://localhost:8000/api/counters/

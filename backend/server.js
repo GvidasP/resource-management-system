@@ -17,14 +17,10 @@ db.once("open", () => console.log("connected to database"));
 
 app.use(express.json());
 
-// db.collection("spools").distinct("manufacturer", (err, values) => {
-//     console.log(values);
-// });
-
 const spoolsRouter = require("./routes/spools");
 app.use("/api/spools", spoolsRouter);
 
-const statsRouter = require("./routes/stats");
+const statsRouter = require("./routes/statistics");
 app.use("/api/statistics", statsRouter);
 
 app.listen(8000, () => console.log("server started"));

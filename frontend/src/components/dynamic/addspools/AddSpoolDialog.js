@@ -8,6 +8,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 
 const AddNewTypeDialog = ({
+    id,
     open,
     handleClose,
     handleSubmit,

@@ -9,20 +9,7 @@ import Typography from "@material-ui/core/Typography";
 const useStyles = makeStyles(theme => ({
     root: {
         minWidth: 250,
-        maxWidth: 350,
-        height: 150,
         marginBottom: theme.spacing(2)
-    },
-    bullet: {
-        display: "inline-block",
-        margin: "0 2px",
-        transform: "scale(0.8)"
-    },
-    title: {
-        fontSize: 14
-    },
-    pos: {
-        marginBottom: 12
     },
     info: {
         display: "flex",
@@ -34,6 +21,10 @@ const useStyles = makeStyles(theme => ({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between"
+    },
+    id: {
+        fontWeight: "bold",
+        marginTop: theme.spacing(1)
     }
 }));
 
@@ -61,15 +52,14 @@ const AddSpoolCard = ({ spool, handleRemoveSpool }) => {
                     <span>Spalva</span>
                     <span>Svoris(g)</span>
                 </Typography>
-                <Typography
-                    // variant="h6"
-                    className={classes.info}
-                    align="center"
-                >
+                <Typography className={classes.info} align="center">
                     <span>{manufacturer}</span>
                     <span>{plasticType}</span>
                     <span>{color}</span>
                     <span>{weight}</span>
+                </Typography>
+                <Typography className={classes.id} align="center">
+                    {spool.index}
                 </Typography>
             </CardContent>
             <CardActions>
