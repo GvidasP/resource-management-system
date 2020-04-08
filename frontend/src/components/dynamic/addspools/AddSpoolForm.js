@@ -12,40 +12,41 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { API_URL } from "../../../utils/api";
 import AddNewTypeDialog from "./AddSpoolDialog";
 import AddSpoolAutocomplete from "./AddSpoolAutocomplete";
-import AddSpoolCard from "./AddSpoolCard";
+import AddSpoolPaper from "./AddSpoolPaper";
+import AddedSpoolsGrid from "./AddedSpoolsGrid";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     addSpoolForm: {
         width: "55%",
-        marginRight: theme.spacing(3)
+        marginRight: theme.spacing(3),
     },
     inputs: {
         "& > *": {
-            marginBottom: theme.spacing(2)
-        }
+            marginBottom: theme.spacing(2),
+        },
     },
     error: {
-        marginTop: theme.spacing(2)
+        marginTop: theme.spacing(2),
     },
     buttons: {
         "& > *": {
-            marginRight: theme.spacing(1)
-        }
-    }
+            marginRight: theme.spacing(1),
+        },
+    },
 }));
 
 const AddSpoolForm = () => {
     const classes = useStyles();
     const [values, setValues] = React.useState({
-        plasticTypes: null,
-        colors: null,
-        manufacturers: null,
-        weight: ""
+        manufacturers: { id: null, title: "" },
+        plasticTypes: { id: null, title: "" },
+        colors: { id: null, title: "" },
+        weight: "",
     });
     const [isLoading, setIsLoading] = React.useState(true);
     const [data, setData] = React.useState({});
@@ -53,163 +54,130 @@ const AddSpoolForm = () => {
         manufacturer: false,
         plasticType: false,
         color: false,
-        weight: false
+        weight: false,
     });
-    const [dialogValue, setDialogValue] = React.useState({
-        title: null
-    });
+    const [dialogValue, setDialogValue] = React.useState("");
     const [error, setError] = React.useState("");
     const [spools, setSpools] = React.useState([]);
     const [spoolsIndex, setSpoolsIndex] = React.useState(0);
 
     React.useEffect(() => {
-        // const statisticsRequest = axios.get(`${API_URL}/statistics/`);
         const fetchData = async () => {
-            const result = await axios.get(`${API_URL}/statistics/`);
-            setData(result.data);
+            const getStatistics = () => axios.get(`${API_URL}/statistics/`);
+            const getSpoolsIndex = () =>
+                axios.get(`${API_URL}/counters/spools/`);
+            const [spoolIndex, statistics] = await Promise.all([
+                getSpoolsIndex(),
+                getStatistics(),
+            ]);
+            setData(statistics.data);
+            setSpoolsIndex(spoolIndex.data.sequence_value);
             setIsLoading(false);
         };
         fetchData();
     }, [isLoading]);
 
-    const handleSubmit = prop => event => {
+    const handleSubmit = (prop) => (event) => {
         event.preventDefault();
         axios
             .post(`${API_URL}/statistics/update/`, {
-                [prop]: { title: dialogValue.title }
+                [prop]: { title: dialogValue },
             })
-            .then(() => {
-                // data[`${prop}`].push({ title: dialogValue.title });
+            .then((result) => {
                 setIsLoading(true);
-                setValues(values => ({
+                const element = result.data[0][`${prop}`].find(
+                    (item) => item.title === dialogValue
+                );
+                setValues((values) => ({
                     ...values,
-                    [prop]: dialogValue.title
+                    [prop]: {
+                        title: dialogValue,
+                        id: element.id,
+                    },
                 }));
             })
-            .catch(error => console.log(error));
-        // setData(data => ({
-        //     ...data,
-        //     [prop]: [
-        //         ...data.manufacturers,
-        //         { id: spoolsIndex, title: dialogValue.title }
-        //     ]
-        // }));
+            .catch((error) => console.log(error));
         handleClose();
     };
 
-    const handleChange = prop => (event, value) => {
+    const handleChange = (prop) => (event, value) => {
         setValues({ ...values, [prop]: event });
     };
 
-    const handleOpen = prop => value => {
+    const handleOpen = (prop) => (value) => {
         toggleOpen({ ...open, [prop]: value });
     };
 
     const handleClose = () => {
         setDialogValue({
-            title: ""
+            title: "",
         });
 
-        Object.keys(open).forEach(obj => (open[obj] = false));
+        Object.keys(open).forEach((obj) => (open[obj] = false));
     };
 
-    const renderNewManufacturerDialog = () => (
-        <AddNewTypeDialog
-            id="manufacturer-dialog"
-            open={open.manufacturer}
-            handleClose={handleClose}
-            handleSubmit={handleSubmit("manufacturers")}
-            dialogValue={dialogValue}
-            setDialogValue={setDialogValue}
-            dialogTitle="Pridėti naują gamintoją"
-            textFieldLabel="Gamintojas"
-        />
-    );
+    const newTypeDialogs = [
+        {
+            id: "manufacturer-dialog",
+            open: open.manufacturer,
+            handleClose: handleClose,
+            handleSubmit: handleSubmit("manufacturers"),
+            dialogValue: dialogValue,
+            setDialogValue: setDialogValue,
+            dialogTitle: "Pridėti naują gamintoją",
+            textFieldLabel: "Gamintojas",
+        },
+        {
+            id: "plasticType-dialog",
+            open: open.plasticType,
+            handleClose: handleClose,
+            handleSubmit: handleSubmit("plasticTypes"),
+            dialogValue: dialogValue,
+            setDialogValue: setDialogValue,
+            dialogTitle: "Pridėti naują plastiko tipą",
+            textFieldLabel: "Plastiko tipas",
+        },
+        {
+            id: "color-dialog",
+            open: open.color,
+            handleClose: handleClose,
+            handleSubmit: handleSubmit("colors"),
+            dialogValue: dialogValue,
+            setDialogValue: setDialogValue,
+            dialogTitle: "Pridėti naują spalvą",
+            textFieldLabel: "Spalva",
+        },
+    ];
 
-    const renderNewPlasticTypeDialog = () => (
-        <AddNewTypeDialog
-            id="plasticType-dialog"
-            open={open.plasticType}
-            handleClose={handleClose}
-            handleSubmit={handleSubmit("plasticTypes")}
-            dialogValue={dialogValue}
-            setDialogValue={setDialogValue}
-            dialogTitle="Pridėti naują plastiko tipą"
-            textFieldLabel="Plastiko tipas"
-        />
-    );
-
-    const renderNewColorDialog = () => (
-        <div className={classes.input}>
-            <AddNewTypeDialog
-                id="color-dialog"
-                open={open.color}
-                handleClose={handleClose}
-                handleSubmit={handleSubmit("colors")}
-                dialogValue={dialogValue}
-                setDialogValue={setDialogValue}
-                dialogTitle="Pridėti naują spalvą"
-                textFieldLabel="Spalva"
-            />
-        </div>
-    );
-
-    const renderManufacturerAutocomplete = () => (
-        <AddSpoolAutocomplete
-            id="manufacturer-autocomplete"
-            value={values.manufacturers}
-            toggleOpen={handleOpen("manufacturer")}
-            setDialogValue={setDialogValue}
-            handleChange={handleChange("manufacturers")}
-            options={data.manufacturers}
-            textFieldLabel="Gamintojas"
-        />
-    );
-
-    const renderPlasticTypeAutocomplete = () => (
-        <AddSpoolAutocomplete
-            id="plasticType-autocomplete"
-            value={values.plasticTypes}
-            toggleOpen={handleOpen("plasticType")}
-            setDialogValue={setDialogValue}
-            handleChange={handleChange("plasticTypes")}
-            options={data.plasticTypes}
-            textFieldLabel="Plastiko tipas"
-        />
-    );
-
-    const renderColorAutocomplete = () => (
-        <AddSpoolAutocomplete
-            id="color-autocomplete"
-            value={values.colors}
-            toggleOpen={handleOpen("color")}
-            setDialogValue={setDialogValue}
-            handleChange={handleChange("colors")}
-            options={data.colors}
-            textFieldLabel="Spalva"
-        />
-    );
-
-    const renderAddedSpoolsGrid = () => (
-        <Grid container spacing={3}>
-            {spools &&
-                spools.map(spool => (
-                    <Grid item key={spool.index}>
-                        <AddSpoolCard
-                            spool={spool}
-                            handleRemoveSpool={handleRemoveSpool}
-                        />
-                    </Grid>
-                ))}
-        </Grid>
-    );
-
-    const handleWeightChange = event => {
-        const input = event.target.value;
-        if (!input || input.match(/^\d+(\.\d)?$/)) {
-            setValues({ ...values, weight: input });
-        }
-    };
+    const autocompleteInputs = [
+        {
+            id: "manufacturer-autocomplete",
+            value: values.manufacturers,
+            toggleOpen: handleOpen("manufacturer"),
+            setDialogValue: setDialogValue,
+            handleChange: handleChange("manufacturers"),
+            options: data.manufacturers,
+            textFieldLabel: "Gamintojas",
+        },
+        {
+            id: "plasticType-autocomplete",
+            value: values.plasticTypes,
+            toggleOpen: handleOpen("plasticType"),
+            setDialogValue: setDialogValue,
+            handleChange: handleChange("plasticTypes"),
+            options: data.plasticTypes,
+            textFieldLabel: "Plastiko tipas",
+        },
+        {
+            id: "color-autocomplete",
+            value: values.colors,
+            toggleOpen: handleOpen("color"),
+            setDialogValue: setDialogValue,
+            handleChange: handleChange("colors"),
+            options: data.colors,
+            textFieldLabel: "Spalva",
+        },
+    ];
 
     const renderWeightInput = () => (
         <TextField
@@ -222,8 +190,15 @@ const AddSpoolForm = () => {
         />
     );
 
-    const handleRemoveSpool = index => () => {
-        setSpools(spools.filter(spool => spool.index !== index));
+    const handleWeightChange = (event) => {
+        const input = event.target.value;
+        if (!input || input.match(/^\d+(\.\d)?$/)) {
+            setValues({ ...values, weight: input });
+        }
+    };
+
+    const handleRemoveSpool = (index) => () => {
+        setSpools(spools.filter((spool) => spool.index !== index));
     };
 
     const renderAddButton = () => (
@@ -251,13 +226,16 @@ const AddSpoolForm = () => {
 
     const handleSaveButton = () => {
         if (!error && spools.length) {
-            axios.post(`${API_URL}/spools/`);
+            axios
+                .post(`${API_URL}/spools/add/`, spools)
+                .then(() => setSpools([]))
+                .catch((err) => console.error(err));
         } else {
             console.log("Issaugoti negalima");
         }
     };
 
-    const handleFormSubmit = event => {
+    const handleFormSubmit = (event) => {
         const { manufacturers, plasticTypes, colors, weight } = values;
 
         event.preventDefault();
@@ -274,15 +252,15 @@ const AddSpoolForm = () => {
                 manufacturer: values.manufacturers.title,
                 plasticType: values.plasticTypes.title,
                 color: values.colors.title,
-                weight: values.weight
+                weight: values.weight,
             };
             setSpools([...spools, spool]);
             setSpoolsIndex(spoolsIndex + 1);
             setValues({
-                plasticTypes: null,
-                colors: null,
-                manufacturers: null,
-                weight: ""
+                plasticTypes: { id: null, title: "" },
+                colors: { id: null, title: "" },
+                manufacturers: { id: null, title: "" },
+                weight: "",
             });
         }
     };
@@ -297,9 +275,18 @@ const AddSpoolForm = () => {
                     autoComplete="off"
                 >
                     <div className={classes.inputs}>
-                        {renderManufacturerAutocomplete()}
-                        {renderPlasticTypeAutocomplete()}
-                        {renderColorAutocomplete()}
+                        {autocompleteInputs.map((input) => (
+                            <AddSpoolAutocomplete
+                                id={input.id}
+                                value={input.value}
+                                toggleOpen={input.toggleOpen}
+                                setDialogValue={input.setDialogValue}
+                                handleChange={input.handleChange}
+                                options={input.options}
+                                textFieldLabel={input.textFieldLabel}
+                                key={input.id}
+                            />
+                        ))}
                         {renderWeightInput()}
                     </div>
                     <div className={classes.buttons}>
@@ -316,11 +303,24 @@ const AddSpoolForm = () => {
                 <CircularProgress />
             )}
             <div>
-                {renderNewManufacturerDialog()}
-                {renderNewPlasticTypeDialog()}
-                {renderNewColorDialog()}
+                {newTypeDialogs.map((dialog) => (
+                    <AddNewTypeDialog
+                        id={dialog.id}
+                        open={dialog.open}
+                        handleClose={dialog.handleClose}
+                        handleSubmit={dialog.handleSubmit}
+                        dialogValue={dialog.dialogValue}
+                        setDialogValue={dialog.setDialogValue}
+                        textFieldLabel={dialog.textFieldLabel}
+                        dialogTitle={dialog.dialogTitle}
+                        key={dialog.id}
+                    />
+                ))}
             </div>
-            {renderAddedSpoolsGrid()}
+            <AddedSpoolsGrid
+                spools={spools}
+                handleRemoveSpool={handleRemoveSpool}
+            />
         </div>
     );
 };

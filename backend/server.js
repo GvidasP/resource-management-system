@@ -9,10 +9,10 @@ app.use(cors());
 
 mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 });
 const db = mongoose.connection;
-db.on("error", error => console.error(error));
+db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("connected to database"));
 
 app.use(express.json());
@@ -22,5 +22,8 @@ app.use("/api/spools", spoolsRouter);
 
 const statsRouter = require("./routes/statistics");
 app.use("/api/statistics", statsRouter);
+
+const countersRouter = require("./routes/counters");
+app.use("/api/counters", countersRouter);
 
 app.listen(8000, () => console.log("server started"));

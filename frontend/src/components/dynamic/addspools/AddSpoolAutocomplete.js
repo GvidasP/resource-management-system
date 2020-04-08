@@ -2,7 +2,7 @@ import React from "react";
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete, {
-    createFilterOptions
+    createFilterOptions,
 } from "@material-ui/lab/Autocomplete";
 
 const filter = createFilterOptions();
@@ -14,7 +14,7 @@ const AddSpoolAutocomplete = ({
     setDialogValue,
     handleChange,
     options,
-    textFieldLabel
+    textFieldLabel,
 }) => {
     return (
         <Autocomplete
@@ -23,23 +23,14 @@ const AddSpoolAutocomplete = ({
                 if (typeof newValue === "string") {
                     setTimeout(() => {
                         toggleOpen(true);
-                        setDialogValue({
-                            title: newValue
-                        });
+                        setDialogValue(newValue);
                     });
                     return;
                 }
-
                 if (newValue && newValue.inputValue) {
                     toggleOpen(true);
-                    setDialogValue({
-                        title: newValue.inputValue
-                    });
-
+                    setDialogValue(newValue.inputValue);
                     return;
-                }
-                if (newValue) {
-                    handleChange(newValue.title);
                 }
                 handleChange(newValue);
             }}
@@ -49,7 +40,7 @@ const AddSpoolAutocomplete = ({
                 if (params.inputValue !== "") {
                     filtered.push({
                         inputValue: params.inputValue,
-                        title: `Pridėti "${params.inputValue}"`
+                        title: `Pridėti "${params.inputValue}"`,
                     });
                 }
 
@@ -57,8 +48,7 @@ const AddSpoolAutocomplete = ({
             }}
             id={id}
             options={options}
-            inputValue={value && value.title}
-            getOptionLabel={option => {
+            getOptionLabel={(option) => {
                 if (typeof option === "string") {
                     return option;
                 }
@@ -67,9 +57,9 @@ const AddSpoolAutocomplete = ({
                 }
                 return option.title;
             }}
-            renderOption={option => option.title}
+            renderOption={(option) => option.title}
             freeSolo
-            renderInput={params => (
+            renderInput={(params) => (
                 <TextField
                     {...params}
                     label={textFieldLabel}

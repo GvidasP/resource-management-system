@@ -1,13 +1,20 @@
 POST http://localhost:8000/api/spools/add
 Content-Type: application/json
 
-{
-  "customId": "0000000007",
+[{
+  "index": "0000000007",
   "manufacturer": "WHS",
   "plasticType": "dust",
   "weight": 450,
   "color": "red"
-}
+},
+{
+  "index": "0000000008",
+  "manufacturer": "WHS",
+  "plasticType": "dust",
+  "weight": 450,
+  "color": "red"
+}]
 
 ###
 
@@ -20,7 +27,7 @@ Content-Type: application/json
 
 {
   "plasticTypes": {
-    "title": "naujas14"
+    "title": "naujas15"
   }
 }
 ###

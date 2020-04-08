@@ -1,31 +1,31 @@
 const mongoose = require("mongoose");
 
 const spoolSchema = new mongoose.Schema({
-    customId: {
+    index: {
         type: String,
-        required: true
+        required: true,
     },
     manufacturer: {
         type: String,
-        required: true
+        required: true,
     },
     plasticType: {
         type: String,
-        required: true
+        required: true,
     },
     weight: {
         type: Number,
-        required: true
+        required: true,
     },
     color: {
         type: String,
-        required: true
+        required: true,
     },
     dateOpened: {
         type: Date,
         required: true,
-        default: Date.now
-    }
+        default: Date.now,
+    },
 });
 
 module.exports = mongoose.model("Spool", spoolSchema);

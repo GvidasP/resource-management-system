@@ -52,12 +52,18 @@ const AddSpoolCard = ({ spool, handleRemoveSpool }) => {
                     <span>Spalva</span>
                     <span>Svoris(g)</span>
                 </Typography>
-                <Typography className={classes.info} align="center">
+                {/* <Typography className={classes.info} align="center">
                     <span>{manufacturer}</span>
                     <span>{plasticType}</span>
                     <span>{color}</span>
                     <span>{weight}</span>
-                </Typography>
+                </Typography> */}
+                <div className={classes.info}>
+                    <Typography align="center">{manufacturer}</Typography>
+                    <Typography align="center">{plasticType}</Typography>
+                    <Typography align="center">{color}</Typography>
+                    <Typography align="center">{weight}</Typography>
+                </div>
                 <Typography className={classes.id} align="center">
                     {spool.index}
                 </Typography>

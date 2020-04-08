@@ -4,10 +4,10 @@ import { makeStyles } from "@material-ui/core";
 
 import AddSpoolForm from "./AddSpoolForm";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     pageTitle: {
-        color: theme.palette.text.primary
-    }
+        color: theme.palette.text.primary,
+    },
 }));
 
 const AddSpool = () => {

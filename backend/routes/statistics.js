@@ -10,12 +10,13 @@ router.get("/", async (req, res) => {
         const doc = await db
             .collection("statistics")
             .findOne({}, { sort: { _id: -1 } });
-        console.log(doc.manufacturers.findIndex(obj => obj.title === "bla"));
         res.status(200).json(doc);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 });
+
+router.get("/counters", async (req, res) => {});
 
 router.post("/update", async (req, res) => {
     const oldDoc = await db
@@ -28,8 +29,8 @@ router.post("/update", async (req, res) => {
                   ...oldDoc.manufacturers,
                   {
                       id: await getNextSequenceValue("manufacturers"),
-                      title: req.body.manufacturers.title
-                  }
+                      title: req.body.manufacturers.title,
+                  },
               ]
             : [...oldDoc.manufacturers],
         plasticTypes: req.body.plasticTypes
@@ -37,8 +38,8 @@ router.post("/update", async (req, res) => {
                   ...oldDoc.plasticTypes,
                   {
                       id: await getNextSequenceValue("plasticTypes"),
-                      title: req.body.plasticTypes.title
-                  }
+                      title: req.body.plasticTypes.title,
+                  },
               ]
             : [...oldDoc.plasticTypes],
         colors: req.body.colors
@@ -46,16 +47,18 @@ router.post("/update", async (req, res) => {
                   ...oldDoc.colors,
                   {
                       id: await getNextSequenceValue("colors"),
-                      title: req.body.colors.title
-                  }
+                      title: req.body.colors.title,
+                  },
               ]
-            : [...oldDoc.colors]
+            : [...oldDoc.colors],
     };
-    db.collection("statistics").insertOne(updatedDoc);
-    res.status(200).json(updatedDoc);
+    db.collection("statistics")
+        .insertOne(updatedDoc)
+        .then((result) => res.status(200).json(result.ops))
+        .catch((err) => res.status(400).json(err));
 });
 
-const getNextSequenceValue = async sequenceName => {
+const getNextSequenceValue = async (sequenceName) => {
     const query = { _id: sequenceName };
     const update = { $inc: { sequence_value: 1 } };
     const options = { returnNewDocument: true };

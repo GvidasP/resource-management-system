@@ -15,7 +15,7 @@ const AddNewTypeDialog = ({
     dialogValue,
     setDialogValue,
     textFieldLabel,
-    dialogTitle
+    dialogTitle,
 }) => {
     return (
         <Dialog
@@ -32,11 +32,10 @@ const AddNewTypeDialog = ({
                         autoFocus
                         margin="dense"
                         id="title"
-                        value={dialogValue.title}
-                        onChange={event => {
-                            setDialogValue({
-                                title: event.target.value
-                            });
+                        value={dialogValue}
+                        onChange={(event) => {
+                            setDialogValue(event.target.value);
+                            console.log(event.target.value);
                         }}
                         label={textFieldLabel}
                         type="text"
