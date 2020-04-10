@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 
 router.get("/counters", async (req, res) => {});
 
-router.post("/update", async (req, res) => {
+router.post("/", async (req, res) => {
     const oldDoc = await db
         .collection("statistics")
         .findOne({}, { sort: { _id: -1 } });

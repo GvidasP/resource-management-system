@@ -1,6 +1,7 @@
 import React from "react";
 
 import { makeStyles } from "@material-ui/core";
+import spoolsContext from "../../../state/spoolsContext";
 
 import AddSpoolForm from "./AddSpoolForm";
 
@@ -12,11 +13,16 @@ const useStyles = makeStyles((theme) => ({
 
 const AddSpool = () => {
     const classes = useStyles();
+    const [spools, setSpools] = React.useState([]);
+    const value = { spools, setSpools };
+
     return (
-        <div className="container">
-            <h1 className={classes.pageTitle}>Ritės pridėjimas</h1>
-            <AddSpoolForm />
-        </div>
+        <spoolsContext.Provider value={value}>
+            <div className="container">
+                <h1 className={classes.pageTitle}>Ritės pridėjimas</h1>
+                <AddSpoolForm />
+            </div>
+        </spoolsContext.Provider>
     );
 };
 

@@ -93,7 +93,7 @@ const AddSpoolPaper = ({ spool, handleRemoveSpool }) => {
                     <Button
                         variant="outlined"
                         className={classes.removeButton}
-                        onClick={handleRemoveSpool}
+                        onClick={handleRemoveSpool(index)}
                     >
                         Pašalinti
                     </Button>

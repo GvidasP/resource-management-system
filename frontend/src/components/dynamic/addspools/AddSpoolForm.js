@@ -2,18 +2,19 @@ import React from "react";
 import axios from "axios";
 
 import { makeStyles, Button } from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
 import AddIcon from "@material-ui/icons/Add";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
 import SaveAltIcon from "@material-ui/icons/SaveAlt";
+import ClearIcon from "@material-ui/icons/Clear";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+import spoolsContext from "../../../state/spoolsContext";
 import { API_URL } from "../../../utils/api";
 import AddNewTypeDialog from "./AddSpoolDialog";
 import AddSpoolAutocomplete from "./AddSpoolAutocomplete";
-import AddSpoolPaper from "./AddSpoolPaper";
 import AddedSpoolsGrid from "./AddedSpoolsGrid";
+import AddSpoolWeightInput from "./AddSpoolWeightInput";
+import ExportPdfButton from "./ExportPdfButton";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
             marginRight: theme.spacing(1),
         },
     },
+    clearButton: {
+        backgroundColor: "#e57373",
+    },
 }));
 
 const AddSpoolForm = () => {
@@ -58,7 +62,7 @@ const AddSpoolForm = () => {
     });
     const [dialogValue, setDialogValue] = React.useState("");
     const [error, setError] = React.useState("");
-    const [spools, setSpools] = React.useState([]);
+    const { spools, setSpools } = React.useContext(spoolsContext);
     const [spoolsIndex, setSpoolsIndex] = React.useState(0);
 
     React.useEffect(() => {
@@ -80,7 +84,7 @@ const AddSpoolForm = () => {
     const handleSubmit = (prop) => (event) => {
         event.preventDefault();
         axios
-            .post(`${API_URL}/statistics/update/`, {
+            .post(`${API_URL}/statistics/`, {
                 [prop]: { title: dialogValue },
             })
             .then((result) => {
@@ -179,17 +183,6 @@ const AddSpoolForm = () => {
         },
     ];
 
-    const renderWeightInput = () => (
-        <TextField
-            id="weight-textfield"
-            label="Svoris (g)"
-            fullWidth
-            onChange={handleWeightChange}
-            className={classes.input}
-            value={values && values.weight}
-        />
-    );
-
     const handleWeightChange = (event) => {
         const input = event.target.value;
         if (!input || input.match(/^\d+(\.\d)?$/)) {
@@ -219,16 +212,34 @@ const AddSpoolForm = () => {
             variant="contained"
             startIcon={<SaveAltIcon />}
             onClick={handleSaveButton}
+            disabled={!spools.length}
         >
-            Išsaugoti
+            Įrašyti
         </Button>
     );
+
+    const renderClearButton = () => (
+        <Button
+            variant="contained"
+            color="primary"
+            startIcon={<ClearIcon />}
+            className={classes.clearButton}
+            onClick={handleClearButton}
+            disabled={!spools.length}
+        >
+            Išvalyti
+        </Button>
+    );
+
+    const handleClearButton = () => {
+        setSpools([]);
+    };
 
     const handleSaveButton = () => {
         if (!error && spools.length) {
             axios
-                .post(`${API_URL}/spools/add/`, spools)
-                .then(() => setSpools([]))
+                .post(`${API_URL}/spools/`, spools)
+                .then()
                 .catch((err) => console.error(err));
         } else {
             console.log("Issaugoti negalima");
@@ -287,11 +298,18 @@ const AddSpoolForm = () => {
                                 key={input.id}
                             />
                         ))}
-                        {renderWeightInput()}
+                        <AddSpoolWeightInput
+                            handleChange={handleWeightChange}
+                            classes={classes.input}
+                            values={values}
+                        />
                     </div>
                     <div className={classes.buttons}>
                         {renderAddButton()}
                         {renderSaveButton()}
+                        {renderClearButton()}
+                        {/* <AddedSpoolsExportPdfButton disabled={!spools.length} /> */}
+                        <ExportPdfButton spools={spools} />
                     </div>
                     {error && (
                         <Typography color="error" className={classes.error}>
@@ -321,6 +339,10 @@ const AddSpoolForm = () => {
                 spools={spools}
                 handleRemoveSpool={handleRemoveSpool}
             />
+            {/* {spools.length &&
+                spools.map((spool) => (
+                    <SpoolQRCode index={spool.index} key={spool.index} />
+                ))} */}
         </div>
     );
 };
