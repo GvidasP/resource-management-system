@@ -51,40 +51,30 @@ const AddSpoolPaper = ({ spool, handleRemoveSpool }) => {
                     Ritė
                 </Typography>
                 <div className={classes.headings}>
-                    <Typography
-                        variant="caption"
-                        align="center"
-                        className={classes.heading}
-                    >
-                        Gamintojas
-                    </Typography>
-                    <Typography
-                        variant="caption"
-                        align="center"
-                        className={classes.heading}
-                    >
-                        Plastiko tipas
-                    </Typography>
-                    <Typography
-                        variant="caption"
-                        align="center"
-                        className={classes.heading}
-                    >
-                        Spalva
-                    </Typography>
-                    <Typography
-                        variant="caption"
-                        align="center"
-                        className={classes.heading}
-                    >
-                        Svoris (g)
-                    </Typography>
+                    {[
+                        "Gamintojas",
+                        "Plastiko tipas",
+                        "Spalva",
+                        "Svoris (g)",
+                    ].map((heading) => (
+                        <Typography
+                            variant="caption"
+                            align="center"
+                            className={classes.heading}
+                            key={heading}
+                        >
+                            {heading}
+                        </Typography>
+                    ))}
                 </div>
                 <div className={classes.details}>
-                    <Typography align="center">{manufacturer}</Typography>
-                    <Typography align="center">{plasticType}</Typography>
-                    <Typography align="center">{color}</Typography>
-                    <Typography align="center">{weight}</Typography>
+                    {[manufacturer, plasticType, color, weight].map(
+                        (detail) => (
+                            <Typography align="center" key={detail}>
+                                {detail}
+                            </Typography>
+                        )
+                    )}
                 </div>
                 <Typography className={classes.id} align="center">
                     {index}

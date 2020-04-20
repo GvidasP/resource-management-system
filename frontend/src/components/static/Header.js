@@ -16,12 +16,3 @@ const Header = () => {
 };
 
 export default Header;
-
-// useEffect(() => {
-//     const fetchData = async () => {
-//         const result = await axios.get(`${API_URL}/spools`);
-//         console.log(result.data);
-//     };
-
-//     fetchData();
-// }, []);

@@ -1,11 +1,8 @@
 import React from "react";
 import axios from "axios";
 
-import { makeStyles, Button } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
+import { makeStyles } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import SaveAltIcon from "@material-ui/icons/SaveAlt";
-import ClearIcon from "@material-ui/icons/Clear";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import spoolsContext from "../../../state/spoolsContext";
@@ -14,7 +11,10 @@ import AddNewTypeDialog from "./AddSpoolDialog";
 import AddSpoolAutocomplete from "./AddSpoolAutocomplete";
 import AddedSpoolsGrid from "./AddedSpoolsGrid";
 import AddSpoolWeightInput from "./AddSpoolWeightInput";
-import ExportPdfButton from "./ExportPdfButton";
+import ExportPdfButton from "./buttons/ExportPdfButton";
+import ClearButton from "./buttons/ClearButton";
+import SaveButton from "./buttons/SaveButton";
+import AddButton from "./buttons/AddButton";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -194,58 +194,6 @@ const AddSpoolForm = () => {
         setSpools(spools.filter((spool) => spool.index !== index));
     };
 
-    const renderAddButton = () => (
-        <Button
-            form="add-spool-form"
-            color="primary"
-            variant="contained"
-            startIcon={<AddIcon />}
-            type="submit"
-        >
-            Pridėti
-        </Button>
-    );
-
-    const renderSaveButton = () => (
-        <Button
-            color="secondary"
-            variant="contained"
-            startIcon={<SaveAltIcon />}
-            onClick={handleSaveButton}
-            disabled={!spools.length}
-        >
-            Įrašyti
-        </Button>
-    );
-
-    const renderClearButton = () => (
-        <Button
-            variant="contained"
-            color="primary"
-            startIcon={<ClearIcon />}
-            className={classes.clearButton}
-            onClick={handleClearButton}
-            disabled={!spools.length}
-        >
-            Išvalyti
-        </Button>
-    );
-
-    const handleClearButton = () => {
-        setSpools([]);
-    };
-
-    const handleSaveButton = () => {
-        if (!error && spools.length) {
-            axios
-                .post(`${API_URL}/spools/`, spools)
-                .then()
-                .catch((err) => console.error(err));
-        } else {
-            console.log("Issaugoti negalima");
-        }
-    };
-
     const handleFormSubmit = (event) => {
         const { manufacturers, plasticTypes, colors, weight } = values;
 
@@ -305,10 +253,9 @@ const AddSpoolForm = () => {
                         />
                     </div>
                     <div className={classes.buttons}>
-                        {renderAddButton()}
-                        {renderSaveButton()}
-                        {renderClearButton()}
-                        {/* <AddedSpoolsExportPdfButton disabled={!spools.length} /> */}
+                        <AddButton />
+                        <SaveButton spools={spools} />
+                        <ClearButton className={classes.clearButton} />
                         <ExportPdfButton spools={spools} />
                     </div>
                     {error && (
@@ -339,10 +286,6 @@ const AddSpoolForm = () => {
                 spools={spools}
                 handleRemoveSpool={handleRemoveSpool}
             />
-            {/* {spools.length &&
-                spools.map((spool) => (
-                    <SpoolQRCode index={spool.index} key={spool.index} />
-                ))} */}
         </div>
     );
 };

@@ -313,6 +313,10 @@ export default function EnhancedTable() {
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
+    const getDate = (date) => {
+        return date.split("T")[0];
+    };
+
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
@@ -374,25 +378,20 @@ export default function EnhancedTable() {
                                                 >
                                                     {row.index}
                                                 </TableCell>
-                                                <TableCell align="center">
-                                                    {row.manufacturer}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {row.plasticType}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {row.weight}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {row.color}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {
-                                                        row.dateOpened.split(
-                                                            "T"
-                                                        )[0]
-                                                    }
-                                                </TableCell>
+                                                {[
+                                                    row.manufacturer,
+                                                    row.plasticType,
+                                                    row.weight,
+                                                    row.color,
+                                                    getDate(row.dateOpened),
+                                                ].map((tableCell) => (
+                                                    <TableCell
+                                                        align="center"
+                                                        key={tableCell}
+                                                    >
+                                                        {tableCell}
+                                                    </TableCell>
+                                                ))}
                                             </TableRow>
                                         );
                                     })}

@@ -4,7 +4,7 @@ import axios from "axios";
 import { Button } from "@material-ui/core";
 import PictureAsPdfIcon from "@material-ui/icons/PictureAsPdf";
 import { makeStyles } from "@material-ui/core";
-import { API_URL } from "../../../utils/api";
+import { API_URL } from "../../../../utils/api";
 
 const useStyles = makeStyles((theme) => ({
     root: {
