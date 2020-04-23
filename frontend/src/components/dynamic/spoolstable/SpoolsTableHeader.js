@@ -8,24 +8,24 @@ import TableCell from "@material-ui/core/TableCell";
 import Checkbox from "@material-ui/core/Checkbox";
 
 const headCells = [
-    { id: "customId", numeric: false, disablePadding: true, label: "id" },
+    { id: "customId", numeric: true, disablePadding: true, label: "id" },
     {
         id: "manufacturer",
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: "gamintojas",
     },
     {
         id: "plasticType",
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: "plastiko tipas",
     },
     { id: "weight", numeric: true, disablePadding: false, label: "masė (g)" },
-    { id: "color", numeric: true, disablePadding: false, label: "spalva" },
+    { id: "color", numeric: false, disablePadding: false, label: "spalva" },
     {
         id: "dateOpened",
-        numeric: true,
+        numeric: false,
         disablePadding: false,
         label: "atidarymo data",
     },

@@ -6,13 +6,17 @@ import Typography from "@material-ui/core/Typography";
 import { lighten, makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
+import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import SpoolsTableSearchbar from "./SpoolsTableSearchbar";
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
+        display: "flex",
+        justifyContent: "space-between",
     },
     highlight:
         theme.palette.type === "light"
@@ -25,13 +29,21 @@ const useToolbarStyles = makeStyles((theme) => ({
                   backgroundColor: theme.palette.secondary.dark,
               },
     title: {
-        flex: "1 1 100%",
+        flex: "1 2 100%",
     },
 }));
 
-const SpoolsTableToolbar = (props) => {
+const SpoolsTableToolbar = ({
+    numSelected,
+    searchQuery,
+    handleSearchChange,
+}) => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const [searchVisibility, setSearchVisibility] = React.useState(false);
+
+    const toggleSearch = () => {
+        setSearchVisibility((prev) => !prev);
+    };
 
     return (
         <Toolbar
@@ -56,6 +68,11 @@ const SpoolsTableToolbar = (props) => {
                     Ritės
                 </Typography>
             )}
+            <SpoolsTableSearchbar
+                searchVisibility={searchVisibility}
+                searchQuery={searchQuery}
+                handleSearchChange={handleSearchChange}
+            />
 
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
@@ -64,11 +81,18 @@ const SpoolsTableToolbar = (props) => {
                     </IconButton>
                 </Tooltip>
             ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
+                <>
+                    <Tooltip title="Paieška">
+                        <IconButton onClick={toggleSearch}>
+                            <SearchIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Filtrai">
+                        <IconButton aria-label="filter list">
+                            <FilterListIcon />
+                        </IconButton>
+                    </Tooltip>
+                </>
             )}
         </Toolbar>
     );

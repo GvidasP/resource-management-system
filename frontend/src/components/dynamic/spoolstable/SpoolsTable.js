@@ -15,7 +15,7 @@ import SpoolsTableHeader from "./SpoolsTableHeader";
 import SpoolsTableToolbar from "./SpoolsTableToolbar";
 
 function descendingComparator(a, b, orderBy) {
-    if (orderBy === "id") {
+    if (orderBy === "index") {
         if (parseInt(b[orderBy]) < parseInt(a[orderBy])) {
             return -1;
         }
@@ -41,13 +41,17 @@ function getComparator(order, orderBy) {
 }
 
 function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
+    if (array) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = comparator(a[0], b[0]);
+            if (order !== 0) return order;
+            return a[1] - b[1];
+        });
+        return stabilizedThis.map((el) => el[0]);
+    } else {
+        return [];
+    }
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -79,10 +83,11 @@ const useStyles = makeStyles((theme) => ({
 const EnhancedTable = () => {
     const classes = useStyles();
     const [order, setOrder] = React.useState("asc");
-    const [orderBy, setOrderBy] = React.useState("id");
+    const [orderBy, setOrderBy] = React.useState("index");
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [searchQuery, setSearchQuery] = React.useState("");
 
     const [data, setData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -91,7 +96,7 @@ const EnhancedTable = () => {
         const fetchData = async () => {
             setIsLoading(true);
 
-            const result = await axios.get(`${API_URL}/spools`);
+            const result = await axios.get(`${API_URL}/spools/`);
             setData(result.data);
 
             setIsLoading(false);
@@ -153,10 +158,22 @@ const EnhancedTable = () => {
         return date.split("T")[0];
     };
 
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const filteredSpools = data.filter((spool) => {
+        return spool.index.includes(searchQuery);
+    });
+
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <SpoolsTableToolbar numSelected={selected.length} />
+                <SpoolsTableToolbar
+                    numSelected={selected.length}
+                    searchQuery={searchQuery}
+                    handleSearchChange={handleSearchChange}
+                />
                 {!isLoading && (
                     <TableContainer>
                         <Table
@@ -174,7 +191,10 @@ const EnhancedTable = () => {
                                 rowCount={data.length}
                             />
                             <TableBody>
-                                {stableSort(data, getComparator(order, orderBy))
+                                {stableSort(
+                                    searchQuery ? filteredSpools : data,
+                                    getComparator(order, orderBy)
+                                )
                                     .slice(
                                         page * rowsPerPage,
                                         page * rowsPerPage + rowsPerPage

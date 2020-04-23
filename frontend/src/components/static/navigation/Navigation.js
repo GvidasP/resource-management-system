@@ -17,6 +17,12 @@ const useStyles = makeStyles({
     list: {
         width: 350,
     },
+    menuIcon: {
+        color: "white",
+        "&:hover": {
+            cursor: "pointer",
+        },
+    },
 });
 
 const Navigation = () => {
@@ -39,7 +45,7 @@ const Navigation = () => {
             <Menu
                 onClick={toggleDrawer(true)}
                 fontSize={"large"}
-                style={{ color: "white" }}
+                className={classes.menuIcon}
             />
             <Drawer open={isVisible} onClose={toggleDrawer(false)}>
                 <div
