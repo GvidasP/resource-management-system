@@ -8,9 +8,12 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from "@material-ui/icons/Delete";
+import PrintIcon from "@material-ui/icons/Print";
 import FilterListIcon from "@material-ui/icons/FilterList";
+
 import SpoolsTableSearchbar from "./SpoolsTableSearchbar";
 import SpoolsTableFiltersDialog from "./spoolstablefilters/SpoolsTableFiltersDialog";
+import SpoolsTableDeleteDialog from "./SpoolsTableDeleteDialog";
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
@@ -41,10 +44,14 @@ const SpoolsTableToolbar = ({
     statistics,
     filters,
     setFilters,
+    handleDeleteSpools,
 }) => {
     const classes = useToolbarStyles();
     const [searchVisibility, setSearchVisibility] = React.useState(false);
     const [filtersVisibility, setFiltersVisibility] = React.useState(false);
+    const [deleteDialogVisibility, setDeleteDialogVisibility] = React.useState(
+        false
+    );
 
     const toggleSearch = () => {
         setSearchVisibility((prev) => !prev);
@@ -52,6 +59,10 @@ const SpoolsTableToolbar = ({
 
     const toggleFilters = () => {
         setFiltersVisibility((prev) => !prev);
+    };
+
+    const toggleDeleteDialog = () => {
+        setDeleteDialogVisibility((prev) => !prev);
     };
 
     return (
@@ -79,11 +90,26 @@ const SpoolsTableToolbar = ({
             )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <React.Fragment>
+                    <SpoolsTableDeleteDialog
+                        deleteDialogVisibility={deleteDialogVisibility}
+                        toggleDeleteDialog={toggleDeleteDialog}
+                        handleDeleteSpools={handleDeleteSpools}
+                    />
+                    <Tooltip title="Spausdinti">
+                        <IconButton>
+                            <PrintIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Ištrinti">
+                        <IconButton
+                            aria-label="delete"
+                            onClick={toggleDeleteDialog}
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                </React.Fragment>
             ) : (
                 <React.Fragment>
                     <SpoolsTableSearchbar

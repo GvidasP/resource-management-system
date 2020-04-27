@@ -134,12 +134,12 @@ const EnhancedTable = () => {
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
+    const handleClick = (event, spool) => {
+        const selectedIndex = selected.indexOf(spool._id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, spool._id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -150,7 +150,6 @@ const EnhancedTable = () => {
                 selected.slice(selectedIndex + 1)
             );
         }
-
         setSelected(newSelected);
     };
 
@@ -209,6 +208,10 @@ const EnhancedTable = () => {
         return filteredSpools;
     };
 
+    const handleDeleteSpools = () => {
+        console.log(selected);
+    };
+
     return (
         <div className={classes.root}>
             {!isLoading && (
@@ -220,6 +223,7 @@ const EnhancedTable = () => {
                         statistics={statistics}
                         filters={filters}
                         setFilters={setFilters}
+                        handleDeleteSpools={handleDeleteSpools}
                     />
                     <TableContainer>
                         <Table
@@ -258,7 +262,7 @@ const EnhancedTable = () => {
                                             <TableRow
                                                 hover
                                                 onClick={(event) =>
-                                                    handleClick(event, row._id)
+                                                    handleClick(event, row)
                                                 }
                                                 role="checkbox"
                                                 aria-checked={isItemSelected}
