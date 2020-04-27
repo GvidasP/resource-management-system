@@ -2,8 +2,9 @@ import React from "react";
 import axios from "axios";
 
 import { makeStyles } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
+// import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Alert from "@material-ui/lab/Alert";
 
 import spoolsContext from "../../../state/spoolsContext";
 import { API_URL } from "../../../utils/api";
@@ -259,9 +260,13 @@ const AddSpoolForm = () => {
                         <ExportPdfButton spools={spools} />
                     </div>
                     {error && (
-                        <Typography color="error" className={classes.error}>
+                        <Alert
+                            variant="outlined"
+                            severity="error"
+                            className={classes.error}
+                        >
                             {error}
-                        </Typography>
+                        </Alert>
                     )}
                 </form>
             ) : (
