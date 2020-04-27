@@ -3,17 +3,11 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const mongoose = require("mongoose");
+const path = require("path");
+
+require("./database");
 
 app.use(cors());
-
-mongoose.connect(process.env.DATABASE_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
-const db = mongoose.connection;
-db.on("error", (error) => console.error(error));
-db.once("open", () => console.log("connected to database"));
 
 app.use(express.json());
 
@@ -26,4 +20,11 @@ app.use("/api/statistics", statsRouter);
 const countersRouter = require("./routes/counters");
 app.use("/api/counters", countersRouter);
 
-app.listen(8000, () => console.log("server started"));
+app.use(express.static(path.join(__dirname, "../backend/client/build")));
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../backend/client/build"));
+});
+
+const port = process.env.PORT || 5000;
+
+app.listen(port, () => console.log("server started"));
