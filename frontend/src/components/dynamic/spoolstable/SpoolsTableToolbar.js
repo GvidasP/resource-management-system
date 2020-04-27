@@ -41,7 +41,6 @@ const SpoolsTableToolbar = ({
     statistics,
     filters,
     setFilters,
-    applyFilters,
 }) => {
     const classes = useToolbarStyles();
     const [searchVisibility, setSearchVisibility] = React.useState(false);
@@ -98,7 +97,6 @@ const SpoolsTableToolbar = ({
                         statistics={statistics}
                         filters={filters}
                         setFilters={setFilters}
-                        applyFilters={applyFilters}
                     />
                     <Tooltip title="Paieška">
                         <IconButton onClick={toggleSearch}>

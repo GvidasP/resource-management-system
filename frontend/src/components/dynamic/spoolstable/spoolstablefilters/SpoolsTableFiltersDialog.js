@@ -31,7 +31,6 @@ const SpoolsTableFiltersDialog = ({
     statistics,
     filters,
     setFilters,
-    applyFilters,
 }) => {
     const classes = useStyles();
 
@@ -109,8 +108,7 @@ const SpoolsTableFiltersDialog = ({
                 </form>
             </DialogContent>
             <DialogActions>
-                <Button onClick={toggleFilters}>Atšaukti</Button>
-                <Button onClick={applyFilters}>Pritaikyti</Button>
+                <Button onClick={toggleFilters}>Uždaryti</Button>
             </DialogActions>
         </Dialog>
     );

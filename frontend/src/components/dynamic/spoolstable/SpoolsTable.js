@@ -92,7 +92,7 @@ const EnhancedTable = () => {
         manufacturers: [],
         plasticTypes: [],
         colors: [],
-        weight: [0, 500],
+        weight: [0, 1000],
     });
 
     const [statistics, setStatistics] = React.useState([]);
@@ -180,47 +180,32 @@ const EnhancedTable = () => {
         return spool.index.includes(searchQuery);
     });
 
-    const applyFilters = () => {
-        const filteredSpools = [];
+    const applyFilters = (spools) => {
+        let filteredSpools = spools;
         const inRange = (x, min, max) => {
             return (x - min) * (x - max) <= 0;
         };
 
-        filteredSpools.push(
-            data.filter(
-                (spool) =>
-                    filters.manufacturers.includes(spool.manufacturer) &&
-                    filters.plasticTypes.includes(spool.plasticType) &&
-                    filters.colors.includes(spool.color)
-            )
-        );
-
-        // if (filters.manufacturers.length) {
-        //     filteredSpools.push(
-        //         data.filter((spool) =>
-        //             filters.manufacturers.includes(spool.manufacturer)
-        //         )
-        //     );
-        // }
-        // if (filters.plasticTypes.length) {
-        //     filteredSpools.push(
-        //         data.filter((spool) =>
-        //             filters.plasticTypes.includes(spool.plasticType)
-        //         )
-        //     );
-        // }
-        // if (filters.colors.length) {
-        //     filteredSpools.push(
-        //         data.filter((spool) => filters.colors.includes(spool.color))
-        //     );
-        // }
-        // if (filters.weight.length) {
-        //     filteredSpools.push(
-        //         data.filter((spool) =>
-        //             inRange(spool.weight, filters.weight[0], filters.weight[1])
-        //         )
-        //     );
-        // }
+        if (filters.manufacturers.length) {
+            filteredSpools = spools.filter((spool) =>
+                filters.manufacturers.includes(spool.manufacturer)
+            );
+        }
+        if (filters.plasticTypes.length) {
+            filteredSpools = filteredSpools.filter((spool) =>
+                filters.plasticTypes.includes(spool.plasticType)
+            );
+        }
+        if (filters.colors.length) {
+            filteredSpools = filteredSpools.filter((spool) =>
+                filters.colors.includes(spool.color)
+            );
+        }
+        if (filters.weight.length) {
+            filteredSpools = filteredSpools.filter((spool) =>
+                inRange(spool.weight, filters.weight[0], filters.weight[1])
+            );
+        }
         return filteredSpools;
     };
 
@@ -228,14 +213,12 @@ const EnhancedTable = () => {
         <div className={classes.root}>
             {!isLoading && (
                 <Paper className={classes.paper}>
-                    {console.log(applyFilters())}
                     <SpoolsTableToolbar
                         numSelected={selected.length}
                         searchQuery={searchQuery}
                         handleSearchChange={handleSearchChange}
                         statistics={statistics}
                         filters={filters}
-                        applyFilters={applyFilters}
                         setFilters={setFilters}
                     />
                     <TableContainer>
@@ -256,7 +239,9 @@ const EnhancedTable = () => {
                             />
                             <TableBody>
                                 {stableSort(
-                                    searchQuery ? filteredSpoolsById : data,
+                                    searchQuery
+                                        ? applyFilters(filteredSpoolsById)
+                                        : applyFilters(data),
                                     getComparator(order, orderBy)
                                 )
                                     .slice(
