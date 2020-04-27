@@ -12,6 +12,10 @@ const SpoolsTableDeleteDialog = ({
     toggleDeleteDialog,
     handleDeleteSpools,
 }) => {
+    const handleDelete = () => {
+        toggleDeleteDialog();
+        handleDeleteSpools();
+    };
     return (
         <Dialog open={deleteDialogVisibility} onClose={toggleDeleteDialog}>
             <DialogTitle>Ričių ištrynimas</DialogTitle>
@@ -23,7 +27,7 @@ const SpoolsTableDeleteDialog = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={toggleDeleteDialog}>Atšaukti</Button>
-                <Button onClick={handleDeleteSpools}>Patvirtinti</Button>
+                <Button onClick={handleDelete}>Patvirtinti</Button>
             </DialogActions>
         </Dialog>
     );

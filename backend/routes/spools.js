@@ -17,6 +17,18 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.delete("/", async (req, res) => {
+    try {
+        Spool.deleteMany({
+            _id: req.body,
+        })
+            .then((result) => res.status(200).json(result))
+            .catch((err) => res.status(404).json({ message: err.message }));
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
 router.post("/exportpdf", async (req, res) => {
     try {
         const getDate = () => {

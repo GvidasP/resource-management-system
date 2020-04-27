@@ -110,7 +110,6 @@ const EnhancedTable = () => {
                 getStatistics(),
                 getSpools(),
             ]);
-
             setData(spools.data);
             setStatistics(statistics.data);
 
@@ -209,7 +208,15 @@ const EnhancedTable = () => {
     };
 
     const handleDeleteSpools = () => {
-        console.log(selected);
+        axios
+            .delete(`${API_URL}/spools/`, { data: selected })
+            .then(() => {
+                setData((data) =>
+                    data.filter((spool) => !selected.includes(spool._id))
+                );
+                setSelected([]);
+            })
+            .catch((err) => console.error(err));
     };
 
     return (
