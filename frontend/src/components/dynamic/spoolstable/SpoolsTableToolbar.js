@@ -10,6 +10,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import SpoolsTableSearchbar from "./SpoolsTableSearchbar";
+import SpoolsTableFiltersDialog from "./spoolstablefilters/SpoolsTableFiltersDialog";
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
@@ -37,12 +38,21 @@ const SpoolsTableToolbar = ({
     numSelected,
     searchQuery,
     handleSearchChange,
+    statistics,
+    filters,
+    setFilters,
+    applyFilters,
 }) => {
     const classes = useToolbarStyles();
     const [searchVisibility, setSearchVisibility] = React.useState(false);
+    const [filtersVisibility, setFiltersVisibility] = React.useState(false);
 
     const toggleSearch = () => {
         setSearchVisibility((prev) => !prev);
+    };
+
+    const toggleFilters = () => {
+        setFiltersVisibility((prev) => !prev);
     };
 
     return (
@@ -68,11 +78,6 @@ const SpoolsTableToolbar = ({
                     Ritės
                 </Typography>
             )}
-            <SpoolsTableSearchbar
-                searchVisibility={searchVisibility}
-                searchQuery={searchQuery}
-                handleSearchChange={handleSearchChange}
-            />
 
             {numSelected > 0 ? (
                 <Tooltip title="Delete">
@@ -81,18 +86,34 @@ const SpoolsTableToolbar = ({
                     </IconButton>
                 </Tooltip>
             ) : (
-                <>
+                <React.Fragment>
+                    <SpoolsTableSearchbar
+                        searchVisibility={searchVisibility}
+                        searchQuery={searchQuery}
+                        handleSearchChange={handleSearchChange}
+                    />
+                    <SpoolsTableFiltersDialog
+                        filtersVisibility={filtersVisibility}
+                        toggleFilters={toggleFilters}
+                        statistics={statistics}
+                        filters={filters}
+                        setFilters={setFilters}
+                        applyFilters={applyFilters}
+                    />
                     <Tooltip title="Paieška">
                         <IconButton onClick={toggleSearch}>
                             <SearchIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Filtrai">
-                        <IconButton aria-label="filter list">
+                        <IconButton
+                            aria-label="filter list"
+                            onClick={toggleFilters}
+                        >
                             <FilterListIcon />
                         </IconButton>
                     </Tooltip>
-                </>
+                </React.Fragment>
             )}
         </Toolbar>
     );

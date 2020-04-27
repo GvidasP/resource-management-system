@@ -88,7 +88,14 @@ const EnhancedTable = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [searchQuery, setSearchQuery] = React.useState("");
+    const [filters, setFilters] = React.useState({
+        manufacturers: [],
+        plasticTypes: [],
+        colors: [],
+        weight: [0, 500],
+    });
 
+    const [statistics, setStatistics] = React.useState([]);
     const [data, setData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
 
@@ -96,12 +103,19 @@ const EnhancedTable = () => {
         const fetchData = async () => {
             setIsLoading(true);
 
-            const result = await axios.get(`${API_URL}/spools/`);
-            setData(result.data);
+            const getStatistics = () => axios.get(`${API_URL}/statistics/`);
+            const getSpools = () => axios.get(`${API_URL}/spools/`);
+
+            const [statistics, spools] = await Promise.all([
+                getStatistics(),
+                getSpools(),
+            ]);
+
+            setData(spools.data);
+            setStatistics(statistics.data);
 
             setIsLoading(false);
         };
-
         fetchData();
     }, []);
 
@@ -162,19 +176,68 @@ const EnhancedTable = () => {
         setSearchQuery(event.target.value);
     };
 
-    const filteredSpools = data.filter((spool) => {
+    const filteredSpoolsById = data.filter((spool) => {
         return spool.index.includes(searchQuery);
     });
 
+    const applyFilters = () => {
+        const filteredSpools = [];
+        const inRange = (x, min, max) => {
+            return (x - min) * (x - max) <= 0;
+        };
+
+        filteredSpools.push(
+            data.filter(
+                (spool) =>
+                    filters.manufacturers.includes(spool.manufacturer) &&
+                    filters.plasticTypes.includes(spool.plasticType) &&
+                    filters.colors.includes(spool.color)
+            )
+        );
+
+        // if (filters.manufacturers.length) {
+        //     filteredSpools.push(
+        //         data.filter((spool) =>
+        //             filters.manufacturers.includes(spool.manufacturer)
+        //         )
+        //     );
+        // }
+        // if (filters.plasticTypes.length) {
+        //     filteredSpools.push(
+        //         data.filter((spool) =>
+        //             filters.plasticTypes.includes(spool.plasticType)
+        //         )
+        //     );
+        // }
+        // if (filters.colors.length) {
+        //     filteredSpools.push(
+        //         data.filter((spool) => filters.colors.includes(spool.color))
+        //     );
+        // }
+        // if (filters.weight.length) {
+        //     filteredSpools.push(
+        //         data.filter((spool) =>
+        //             inRange(spool.weight, filters.weight[0], filters.weight[1])
+        //         )
+        //     );
+        // }
+        return filteredSpools;
+    };
+
     return (
         <div className={classes.root}>
-            <Paper className={classes.paper}>
-                <SpoolsTableToolbar
-                    numSelected={selected.length}
-                    searchQuery={searchQuery}
-                    handleSearchChange={handleSearchChange}
-                />
-                {!isLoading && (
+            {!isLoading && (
+                <Paper className={classes.paper}>
+                    {console.log(applyFilters())}
+                    <SpoolsTableToolbar
+                        numSelected={selected.length}
+                        searchQuery={searchQuery}
+                        handleSearchChange={handleSearchChange}
+                        statistics={statistics}
+                        filters={filters}
+                        applyFilters={applyFilters}
+                        setFilters={setFilters}
+                    />
                     <TableContainer>
                         <Table
                             className={classes.table}
@@ -189,10 +252,11 @@ const EnhancedTable = () => {
                                 onSelectAllClick={handleSelectAllClick}
                                 onRequestSort={handleRequestSort}
                                 rowCount={data.length}
+                                statistics={statistics}
                             />
                             <TableBody>
                                 {stableSort(
-                                    searchQuery ? filteredSpools : data,
+                                    searchQuery ? filteredSpoolsById : data,
                                     getComparator(order, orderBy)
                                 )
                                     .slice(
@@ -263,18 +327,18 @@ const EnhancedTable = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                )}
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                    labelRowsPerPage="Ritės puslapyje"
-                />
-            </Paper>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={data.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        labelRowsPerPage="Ritės puslapyje"
+                    />
+                </Paper>
+            )}
         </div>
     );
 };

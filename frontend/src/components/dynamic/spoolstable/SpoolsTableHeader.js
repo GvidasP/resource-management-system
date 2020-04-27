@@ -31,17 +31,15 @@ const headCells = [
     },
 ];
 
-const SpoolsTableHeader = (props) => {
-    const {
-        classes,
-        onSelectAllClick,
-        order,
-        orderBy,
-        numSelected,
-        rowCount,
-        onRequestSort,
-    } = props;
-
+const SpoolsTableHeader = ({
+    classes,
+    onSelectAllClick,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onRequestSort,
+}) => {
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
