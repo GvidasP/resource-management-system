@@ -52,9 +52,8 @@ router.post("/exportpdf", async (req, res) => {
             ? req.body.map((spool) => {
                   const qrcode = qr.imageSync(spool.index, { type: "png" });
                   doc.image(qrcode, {
-                      fit: [100, 100],
-                      align: "left",
-                      valign: "left",
+                      align: "center",
+                      valign: "center",
                   }).text(spool.index);
               })
             : doc.text("");

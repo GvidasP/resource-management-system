@@ -14,6 +14,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import SpoolsTableSearchbar from "./SpoolsTableSearchbar";
 import SpoolsTableFiltersDialog from "./spoolstablefilters/SpoolsTableFiltersDialog";
 import SpoolsTableDeleteDialog from "./SpoolsTableDeleteDialog";
+import SpoolsTablePrintingDialog from "./spoolstableprinting/SpoolsTablePrintingDialog";
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
@@ -45,6 +46,8 @@ const SpoolsTableToolbar = ({
     filters,
     setFilters,
     handleDeleteSpools,
+    handlePrinting,
+    applyFilters,
 }) => {
     const classes = useToolbarStyles();
     const [searchVisibility, setSearchVisibility] = React.useState(false);
@@ -52,6 +55,10 @@ const SpoolsTableToolbar = ({
     const [deleteDialogVisibility, setDeleteDialogVisibility] = React.useState(
         false
     );
+    const [
+        printingDialogVisibility,
+        setPrintingDialogVisibility,
+    ] = React.useState(false);
 
     const toggleSearch = () => {
         setSearchVisibility((prev) => !prev);
@@ -63,6 +70,10 @@ const SpoolsTableToolbar = ({
 
     const toggleDeleteDialog = () => {
         setDeleteDialogVisibility((prev) => !prev);
+    };
+
+    const togglePrintingDialog = () => {
+        setPrintingDialogVisibility((prev) => !prev);
     };
 
     return (
@@ -96,8 +107,14 @@ const SpoolsTableToolbar = ({
                         toggleDeleteDialog={toggleDeleteDialog}
                         handleDeleteSpools={handleDeleteSpools}
                     />
+                    <SpoolsTablePrintingDialog
+                        printingDialogVisibility={printingDialogVisibility}
+                        togglePrintingDialog={togglePrintingDialog}
+                        numSelected={numSelected}
+                        handlePrinting={handlePrinting}
+                    />
                     <Tooltip title="Spausdinti">
-                        <IconButton>
+                        <IconButton onClick={togglePrintingDialog}>
                             <PrintIcon />
                         </IconButton>
                     </Tooltip>
@@ -123,6 +140,7 @@ const SpoolsTableToolbar = ({
                         statistics={statistics}
                         filters={filters}
                         setFilters={setFilters}
+                        applyFilters={applyFilters}
                     />
                     <Tooltip title="Paieška">
                         <IconButton onClick={toggleSearch}>

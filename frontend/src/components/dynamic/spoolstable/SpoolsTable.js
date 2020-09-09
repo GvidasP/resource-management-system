@@ -178,33 +178,46 @@ const EnhancedTable = () => {
         return spool.index.includes(searchQuery);
     });
 
-    const applyFilters = (spools) => {
-        let filteredSpools = spools;
-        const inRange = (x, min, max) => {
-            return (x - min) * (x - max) <= 0;
-        };
+    // const applyFilters = (spools) => {
+    //     let filteredSpools = spools;
+    //     const inRange = (x, min, max) => {
+    //         return (x - min) * (x - max) <= 0;
+    //     };
 
-        if (filters.manufacturers.length) {
-            filteredSpools = spools.filter((spool) =>
+    //     if (filters.manufacturers.length) {
+    //         filteredSpools = data.filter((spool) =>
+    //             filters.manufacturers.includes(spool.manufacturer)
+    //         );
+    //     }
+    //     if (filters.plasticTypes.length) {
+    //         filteredSpools = filteredSpools.filter((spool) =>
+    //             filters.plasticTypes.includes(spool.plasticType)
+    //         );
+    //     }
+    //     if (filters.colors.length) {
+    //         filteredSpools = filteredSpools.filter((spool) =>
+    //             filters.colors.includes(spool.color)
+    //         );
+    //     }
+    //     if (filters.weight.length) {
+    //         filteredSpools = filteredSpools.filter((spool) =>
+    //             inRange(spool.weight, filters.weight[0], filters.weight[1])
+    //         );
+    //     }
+    //     console.log(filteredSpools);
+    //     return filteredSpools;
+    //     // setData(filteredSpools);
+    // };
+
+    const applyFilters = (spools) => {
+        let test = [];
+        test = spools.filter(
+            (spool) =>
+                filters.colors.includes(spool.color) &&
                 filters.manufacturers.includes(spool.manufacturer)
-            );
-        }
-        if (filters.plasticTypes.length) {
-            filteredSpools = filteredSpools.filter((spool) =>
-                filters.plasticTypes.includes(spool.plasticType)
-            );
-        }
-        if (filters.colors.length) {
-            filteredSpools = filteredSpools.filter((spool) =>
-                filters.colors.includes(spool.color)
-            );
-        }
-        if (filters.weight.length) {
-            filteredSpools = filteredSpools.filter((spool) =>
-                inRange(spool.weight, filters.weight[0], filters.weight[1])
-            );
-        }
-        return filteredSpools;
+        );
+        console.log(filters);
+        console.log(test);
     };
 
     const handleDeleteSpools = () => {
@@ -231,6 +244,7 @@ const EnhancedTable = () => {
                         filters={filters}
                         setFilters={setFilters}
                         handleDeleteSpools={handleDeleteSpools}
+                        applyFilters={() => applyFilters(data)}
                     />
                     <TableContainer>
                         <Table
@@ -248,79 +262,83 @@ const EnhancedTable = () => {
                                 rowCount={data.length}
                                 statistics={statistics}
                             />
-                            <TableBody>
-                                {stableSort(
-                                    searchQuery
-                                        ? applyFilters(filteredSpoolsById)
-                                        : applyFilters(data),
-                                    getComparator(order, orderBy)
-                                )
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
+                            {data && (
+                                <TableBody>
+                                    {stableSort(
+                                        searchQuery ? filteredSpoolsById : data,
+                                        getComparator(order, orderBy)
                                     )
-                                    .map((row, index) => {
-                                        const isItemSelected = isSelected(
-                                            row._id
-                                        );
-                                        const labelId = `enhanced-table-checkbox-${index}`;
+                                        .slice(
+                                            page * rowsPerPage,
+                                            page * rowsPerPage + rowsPerPage
+                                        )
+                                        .map((row, index) => {
+                                            const isItemSelected = isSelected(
+                                                row._id
+                                            );
+                                            const labelId = `enhanced-table-checkbox-${index}`;
 
-                                        return (
-                                            <TableRow
-                                                hover
-                                                onClick={(event) =>
-                                                    handleClick(event, row)
-                                                }
-                                                role="checkbox"
-                                                aria-checked={isItemSelected}
-                                                tabIndex={-1}
-                                                key={row._id}
-                                                selected={isItemSelected}
-                                            >
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox
-                                                        checked={isItemSelected}
-                                                        inputProps={{
-                                                            "aria-labelledby": labelId,
-                                                        }}
-                                                    />
-                                                </TableCell>
-                                                <TableCell
-                                                    component="th"
-                                                    id={labelId}
-                                                    scope="row"
-                                                    padding="none"
-                                                    align="center"
+                                            return (
+                                                <TableRow
+                                                    hover
+                                                    onClick={(event) =>
+                                                        handleClick(event, row)
+                                                    }
+                                                    role="checkbox"
+                                                    aria-checked={
+                                                        isItemSelected
+                                                    }
+                                                    tabIndex={-1}
+                                                    key={row._id}
+                                                    selected={isItemSelected}
                                                 >
-                                                    {row.index}
-                                                </TableCell>
-                                                {[
-                                                    row.manufacturer,
-                                                    row.plasticType,
-                                                    row.weight,
-                                                    row.color,
-                                                    getDate(row.dateOpened),
-                                                ].map((tableCell) => (
-                                                    <TableCell
-                                                        align="center"
-                                                        key={tableCell}
-                                                    >
-                                                        {tableCell}
+                                                    <TableCell padding="checkbox">
+                                                        <Checkbox
+                                                            checked={
+                                                                isItemSelected
+                                                            }
+                                                            inputProps={{
+                                                                "aria-labelledby": labelId,
+                                                            }}
+                                                        />
                                                     </TableCell>
-                                                ))}
-                                            </TableRow>
-                                        );
-                                    })}
-                                {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
-                                )}
-                            </TableBody>
+                                                    <TableCell
+                                                        component="th"
+                                                        id={labelId}
+                                                        scope="row"
+                                                        padding="none"
+                                                        align="center"
+                                                    >
+                                                        {row.index}
+                                                    </TableCell>
+                                                    {[
+                                                        row.manufacturer,
+                                                        row.plasticType,
+                                                        row.weight,
+                                                        row.color,
+                                                        getDate(row.dateOpened),
+                                                    ].map((tableCell) => (
+                                                        <TableCell
+                                                            align="center"
+                                                            key={tableCell}
+                                                        >
+                                                            {tableCell}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            );
+                                        })}
+                                    {emptyRows > 0 && (
+                                        <TableRow
+                                            style={{
+                                                height: 53 * emptyRows,
+                                            }}
+                                        >
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            )}
                         </Table>
                     </TableContainer>
                     <TablePagination
