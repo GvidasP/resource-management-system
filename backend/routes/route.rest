@@ -1,0 +1,34 @@
+POST http://localhost:8000/api/spools/add
+Content-Type: application/json
+
+[{
+  "index": "0000000007",
+  "manufacturer": "WHS",
+  "plasticType": "dust",
+  "weight": 450,
+  "color": "red"
+},
+{
+  "index": "0000000008",
+  "manufacturer": "WHS",
+  "plasticType": "dust",
+  "weight": 450,
+  "color": "red"
+}]
+
+###
+
+GET http://localhost:8000/rms-api/spools/5e6b833a527fb33cecc8ed31
+
+###
+
+POST http://localhost:8000/api/statistics/update/
+Content-Type: application/json
+
+{
+  "plasticTypes": {
+    "title": "naujas15"
+  }
+}
+###
+GET http://localhost:8000/api/counters/
