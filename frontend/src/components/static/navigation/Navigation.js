@@ -13,6 +13,7 @@ import Menu from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
 import PageviewIcon from "@material-ui/icons/Pageview";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import BusinessIcon from "@material-ui/icons/Business";
 
 const useStyles = makeStyles({
     list: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles({
     },
 });
 
-const Navigation = () => {
+const Navigation = ({ isAuthenticated }) => {
     const classes = useStyles();
     const [isVisible, setIsVisible] = useState(false);
 
@@ -56,9 +57,14 @@ const Navigation = () => {
                 >
                     <List>
                         {[
-                            { to: "/add", icon: <AddIcon />, text: "Pridėti" },
                             {
                                 to: "/",
+                                icon: <BusinessIcon />,
+                                text: "Pradinis",
+                            },
+                            { to: "/add", icon: <AddIcon />, text: "Pridėti" },
+                            {
+                                to: "/view",
                                 icon: <PageviewIcon />,
                                 text: "Peržiūrėti",
                             },
@@ -73,6 +79,18 @@ const Navigation = () => {
                                 <ListItemText primary={text} />
                             </ListItem>
                         ))}
+                        {isAuthenticated && (
+                            <ListItem
+                                button
+                                component="a"
+                                href="http://localhost:5000/api/auth/logout"
+                            >
+                                <ListItemIcon>
+                                    <ExitToAppIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Atsijungti" />
+                            </ListItem>
+                        )}
                     </List>
                 </div>
             </Drawer>

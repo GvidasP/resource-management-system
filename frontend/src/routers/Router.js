@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../utils/api";
 
-import UnauthenticatedRoute from "./auth/UnauthenticatedRoute";
 import AuthenticatedRoute from "./auth/AuthenticatedRoute";
 import App from "../App";
 import Header from "../components/static/Header";
 import AddSpool from "../components/dynamic/addspools/AddSpool";
-import LoginPage from "../components/static/auth/LoginPage";
+import LandingPage from "../components/static/LandingPage";
 
 const Router = () => {
     const [isAuthenticated, userHasAuthenticated] = useState(false);
@@ -36,11 +35,11 @@ const Router = () => {
 
     return (
         <BrowserRouter>
-            <Header />
+            <Header isAuthenticated={isAuthenticated} />
             <Switch>
                 <AuthenticatedRoute
                     exact
-                    path="/"
+                    path="/view"
                     component={App}
                     appProps={{ isAuthenticated, user }}
                 />
@@ -49,10 +48,15 @@ const Router = () => {
                     component={AddSpool}
                     appProps={{ isAuthenticated, user }}
                 />
-                <UnauthenticatedRoute
-                    path="/login"
-                    component={LoginPage}
-                    appProps={{ isAuthenticated, userHasAuthenticated }}
+                <Route
+                    exact
+                    path="/"
+                    render={(props) => (
+                        <LandingPage
+                            {...props}
+                            isAuthenticated={isAuthenticated}
+                        />
+                    )}
                 />
             </Switch>
         </BrowserRouter>

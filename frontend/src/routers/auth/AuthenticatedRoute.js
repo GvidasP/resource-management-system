@@ -9,7 +9,7 @@ const AuthenticatedRoute = ({ component: C, appProps, ...rest }) => {
                 appProps.isAuthenticated ? (
                     <C {...props} {...appProps} />
                 ) : (
-                    <Redirect to="/login" />
+                    <Redirect to="/" />
                 )
             }
         />

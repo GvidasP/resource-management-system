@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 
 const LogoutButton = () => {
     const handleLogoutButton = () => {
-        window.open("http://localhost:5000/auth/logout", "_self");
+        window.open("http://localhost:5000/api/auth/logout", "_self");
     };
     return <Button onClick={handleLogoutButton}>Atsijungti</Button>;
 };
