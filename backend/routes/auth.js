@@ -10,8 +10,6 @@ router.get(
     })
 );
 router.get("/login/success", (req, res) => {
-    console.log(req.user);
-    console.log("/login/success");
     if (req.user) {
         res.json({
             success: true,
