@@ -1,10 +1,6 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 
-const loginError = (response) => {
-    console.log(response);
-};
-
 const LoginButton = () => {
     const handleLoginButton = () => {
         window.open("http://localhost:5000/api/auth/google", "_self");
