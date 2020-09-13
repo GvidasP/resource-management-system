@@ -12,6 +12,7 @@ import {
 import Menu from "@material-ui/icons/Menu";
 import AddIcon from "@material-ui/icons/Add";
 import PageviewIcon from "@material-ui/icons/Pageview";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const useStyles = makeStyles({
     list: {
@@ -60,6 +61,11 @@ const Navigation = () => {
                                 to: "/",
                                 icon: <PageviewIcon />,
                                 text: "Peržiūrėti",
+                            },
+                            {
+                                to: "/login",
+                                icon: <ExitToAppIcon />,
+                                text: "Prisijungti",
                             },
                         ].map(({ to, icon, text }) => (
                             <ListItem button component={Link} to={to} key={to}>
