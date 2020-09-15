@@ -4,8 +4,6 @@ const cookieSession = require("cookie-session");
 const passport = require("passport");
 const passportSetup = require("./config/passport-setup");
 const session = require("express-session");
-const authRoutes = require("./routes/auth");
-const mongoose = require("mongoose");
 const keys = require("./config/keys");
 const cookieParser = require("cookie-parser");
 const express = require("express");
@@ -56,29 +54,6 @@ app.use("/api/counters", countersRouter);
 app.use(express.static(path.join(__dirname, "../backend/client/build")));
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../backend/client/build"));
-});
-
-const authCheck = (req, res, next) => {
-    if (!req.user) {
-        res.status(401).json({
-            authenticated: false,
-            message: "user has not been authenticated",
-        });
-    } else {
-        next();
-    }
-};
-
-// if it's already login, send the profile response,
-// otherwise, send a 401 response that the user is not authenticated
-// authCheck before navigating to home page
-app.get("/", authCheck, (req, res) => {
-    res.status(200).json({
-        authenticated: true,
-        message: "user successfully authenticated",
-        user: req.user,
-        cookies: req.cookies,
-    });
 });
 
 const port = process.env.PORT || 5000;

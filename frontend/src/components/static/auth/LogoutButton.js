@@ -1,15 +1,14 @@
 import React from "react";
-import { GoogleLogout } from "react-google-login";
+import Button from "@material-ui/core/Button";
 
-const LogoutButton = ({ userHasAuthenticated }) => {
-    const logout = userHasAuthenticated(false);
-
+const LogoutButton = (props) => {
+    const handleLogoutButton = () => {
+        window.open("http://localhost:5000/api/auth/logout", "_self");
+    };
     return (
-        <GoogleLogout
-            clientId="418890674873-o2b40alq0cudvp4dc60lgfr5ii7tfv6h.apps.googleusercontent.com"
-            buttonText="Logout"
-            onLogoutSuccess={logout}
-        />
+        <Button onClick={handleLogoutButton} className={props.style}>
+            Atsijungti
+        </Button>
     );
 };
 
